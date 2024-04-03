@@ -1,7 +1,7 @@
-# TeamQ-Homework5
+# F3 Expanded - Minecraft Plugin
 ### Project Description:
 
-Pizza restaurant automation - implements cooking, topping choice, default pizza varieties, and price calculation.
+Expands vanilla minecraft F3 menu. Adds various extra information useful to the player.
 
 ### Contributers:
 
