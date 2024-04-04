@@ -1,0 +1,4 @@
+name: PluginProject
+main: edu.mu.PluginProject.Plugin
+version: 0.0.1-SNAPSHOT
+api-version: 1.15
