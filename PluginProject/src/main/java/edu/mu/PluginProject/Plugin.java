@@ -10,6 +10,7 @@ public class Plugin extends JavaPlugin
   public void onEnable()
   {
     LOGGER.info("PluginProject enabled");
+    System.out.println("PLUGIN WORKS!!");
   }
 
   public void onDisable()
