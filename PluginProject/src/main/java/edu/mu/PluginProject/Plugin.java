@@ -31,13 +31,15 @@ public class Plugin extends JavaPlugin implements Listener
 	    Score x = objective.getScore("X: ");
 	    Score y = objective.getScore("Y: ");
 	    Score z = objective.getScore("Z: ");
+	    
+	    int[] coords = getPlayerLocation(p);
 
-	    x.setScore(0);
-	    y.setScore(0);
-	    z.setScore(0);
+	    x.setScore(coords[0]);
+	    y.setScore(coords[1]);
+	    z.setScore(coords[2]);
 
 	    return scoreboard;
-	}
+  }
   
   public int[] getPlayerLocation(Player p) 
   {
@@ -66,15 +68,6 @@ public class Plugin extends JavaPlugin implements Listener
     LOGGER.info("PluginProject enabled");
     getServer().getPluginManager().registerEvents(this, this);
     Bukkit.getPluginManager().registerEvents(this, this);
-    
-//    getServer().getScheduler().runTaskTimer(this, new Runnable() {
-//		@Override
-//		public void run() {
-//		    for (FastBoard board : Plugin.this.boards.values()) {
-//		        updateBoard(board);
-//		    }
-//		}
-//	}, 0, 5);
   }
   
   @EventHandler
@@ -90,7 +83,6 @@ public class Plugin extends JavaPlugin implements Listener
   {
 	  Player p = event.getPlayer();
 	  LOGGER.info(p.getDisplayName()+" has quit");
-
   }
   
   @EventHandler
