@@ -18,36 +18,49 @@ public class Plugin extends JavaPlugin implements Listener
   public PlayerManager playerManager = new PlayerManager();
   private final Map<UUID, Scoreboard> boards = new HashMap<>();
   
-  public Scoreboard createScoreboard(Player p) 
+  //HELPER METHODS vvvvvvvvvvvvvvvvvvvvvvvvvvvv
+  
+  //returns a new scoreboard object that contains player coordinate data
+  public Scoreboard createCoordinateScoreboard(Player p) 
   {
 	    Scoreboard scoreboard = Bukkit.getScoreboardManager().getNewScoreboard();
 	    Objective objective = scoreboard.registerNewObjective("test", "dummy", "test", RenderType.INTEGER);
 	    
 	    this.boards.put(p.getUniqueId(), scoreboard);
 	    
-	    objective.setDisplayName("Coordinates");
+	    objective.setDisplayName("Coordinates+");
 	    objective.setDisplaySlot(DisplaySlot.SIDEBAR);
-
+	    
 	    Score x = objective.getScore("X: ");
 	    Score y = objective.getScore("Y: ");
 	    Score z = objective.getScore("Z: ");
+	    Score surface = objective.getScore("S: ");
 	    
 	    int[] coords = getPlayerLocation(p);
-
+	    
 	    x.setScore(coords[0]);
 	    y.setScore(coords[1]);
 	    z.setScore(coords[2]);
-
+	    surface.setScore(0);
+	    
 	    return scoreboard;
   }
   
+  //returns array of player coordinates in {x,y,x} format
   public int[] getPlayerLocation(Player p) 
   {
 	  int[] text = {p.getLocation().getBlockX(), p.getLocation().getBlockY(), p.getLocation().getBlockZ()};
 	  return text;
   }
   
-  public void updatePlayerBoard(Player p)
+  public int getPlayerDistanceFromSurface(Player p)
+  {
+	  int result = 0;
+	  return result;
+  }
+  
+  //updates a players scoreboard object with current coordinates
+  public void updatePlayerCoordinateBoard(Player p)
   {
 	  Scoreboard sb = this.boards.get(p.getUniqueId());
 	  Objective ob = sb.getObjective("test");
@@ -62,6 +75,7 @@ public class Plugin extends JavaPlugin implements Listener
 	  z.setScore(coords[2]);
   }
   
+  // ENABLE/DISABLE OVERRIDES vvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvv
   @Override
   public void onEnable()
   {
@@ -70,12 +84,19 @@ public class Plugin extends JavaPlugin implements Listener
     Bukkit.getPluginManager().registerEvents(this, this);
   }
   
+  @Override
+  public void onDisable()
+  {
+    LOGGER.info("PluginProject disabled");
+  }
+  
+  //PLAYER EVENT HANDLERS vvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvv
   @EventHandler
   public void onPlayerJoin(PlayerJoinEvent event)
   {
 	  Player p = event.getPlayer();
 	  this.playerManager.playerList.add(p);
-	  p.setScoreboard(createScoreboard(p));
+	  p.setScoreboard(createCoordinateScoreboard(p));
   }
   
   @EventHandler
@@ -89,12 +110,6 @@ public class Plugin extends JavaPlugin implements Listener
   public void onPlayerMove(PlayerMoveEvent event)
   {
 	  Player p = event.getPlayer();
-	  updatePlayerBoard(p);
-  }
-  
-  @Override
-  public void onDisable()
-  {
-    LOGGER.info("PluginProject disabled");
+	  updatePlayerCoordinateBoard(p);
   }
 }
