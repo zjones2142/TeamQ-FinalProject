@@ -6,11 +6,15 @@ import java.util.UUID;
 import java.util.logging.Logger;
 
 import org.bukkit.Bukkit;
+import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.event.*;
 import org.bukkit.event.player.*;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.scoreboard.*;
+
+import net.md_5.bungee.api.ChatMessageType;
+import net.md_5.bungee.api.chat.TextComponent;
 
 public class Plugin extends JavaPlugin implements Listener
 {
@@ -20,7 +24,7 @@ public class Plugin extends JavaPlugin implements Listener
   
   //HELPER METHODS vvvvvvvvvvvvvvvvvvvvvvvvvvvv
   
-  //returns a new scoreboard object that contains player coordinate data
+  //returns a new scoreboard object that contains player home data
   public Scoreboard createCoordinateScoreboard(Player p) 
   {
 	    Scoreboard scoreboard = Bukkit.getScoreboardManager().getNewScoreboard();
@@ -28,28 +32,31 @@ public class Plugin extends JavaPlugin implements Listener
 	    
 	    this.boards.put(p.getUniqueId(), scoreboard);
 	    
-	    objective.setDisplayName("Coordinates+");
-	    objective.setDisplaySlot(DisplaySlot.SIDEBAR);
+	    objective.setDisplayName("Home Coords");
+	    objective.setDisplaySlot(null);
 	    
 	    Score x = objective.getScore("X: ");
 	    Score y = objective.getScore("Y: ");
 	    Score z = objective.getScore("Z: ");
-	    Score surface = objective.getScore("S: ");
 	    
-	    int[] coords = getPlayerLocation(p);
-	    
-	    x.setScore(coords[0]);
-	    y.setScore(coords[1]);
-	    z.setScore(coords[2]);
-	    surface.setScore(0);
+	    x.setScore(0);
+	    y.setScore(0);
+	    z.setScore(0);
 	    
 	    return scoreboard;
   }
   
-  //returns array of player coordinates in {x,y,x} format
+  //returns array of player coordinates in {x,y,z} format
   public int[] getPlayerLocation(Player p) 
   {
-	  int[] text = {p.getLocation().getBlockX(), p.getLocation().getBlockY(), p.getLocation().getBlockZ()};
+	  int[] coords = {p.getLocation().getBlockX(), p.getLocation().getBlockY(), p.getLocation().getBlockZ()};
+	  return coords;
+  }
+  
+  public String getPlayerLocationText(Player p)
+  {
+	  int[] coords = getPlayerLocation(p);
+	  String text = "X: "+coords[0]+" | Y: "+coords[1]+" | Z: "+coords[2];
 	  return text;
   }
   
@@ -60,19 +67,19 @@ public class Plugin extends JavaPlugin implements Listener
   }
   
   //updates a players scoreboard object with current coordinates
-  public void updatePlayerCoordinateBoard(Player p)
+  public void updatePlayerBoard(Player p)
   {
-	  Scoreboard sb = this.boards.get(p.getUniqueId());
-	  Objective ob = sb.getObjective("test");
-	  int[] coords = getPlayerLocation(p);
-	  
-	  Score x = ob.getScore("X: ");
-	  Score y = ob.getScore("Y: ");
-	  Score z = ob.getScore("Z: ");
-	  
-	  x.setScore(coords[0]);
-	  y.setScore(coords[1]);
-	  z.setScore(coords[2]);
+//	  Scoreboard sb = this.boards.get(p.getUniqueId());
+//	  Objective ob = sb.getObjective("test");
+//	  int[] coords = getPlayerLocation(p);
+//	  
+//	  Score x = ob.getScore("X: ");
+//	  Score y = ob.getScore("Y: ");
+//	  Score z = ob.getScore("Z: ");
+//	  
+//	  x.setScore(coords[0]);
+//	  y.setScore(coords[1]);
+//	  z.setScore(coords[2]);
   }
   
   // ENABLE/DISABLE OVERRIDES vvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvv
@@ -110,6 +117,32 @@ public class Plugin extends JavaPlugin implements Listener
   public void onPlayerMove(PlayerMoveEvent event)
   {
 	  Player p = event.getPlayer();
-	  updatePlayerCoordinateBoard(p);
+	  String text = getPlayerLocationText(p);
+	  p.spigot().sendMessage(ChatMessageType.ACTION_BAR, TextComponent.fromLegacyText(text));
+  }
+  
+  @EventHandler
+  public void onPlayerHold(PlayerItemHeldEvent event)
+  {
+	  Player p = event.getPlayer();
+	  Material material;
+	  try
+	  {
+		  material = p.getInventory().getItem(event.getNewSlot()).getType();
+	  }
+	  catch(Exception e)
+	  {
+		  material = null;
+	  }
+	  
+	  Scoreboard sb = this.boards.get(p.getUniqueId());
+	  if (material == Material.COMPASS)
+	  {
+		  sb.getObjective("test").setDisplaySlot(DisplaySlot.SIDEBAR);
+	  }
+	  else
+	  {
+		  sb.getObjective("test").setDisplaySlot(null);
+	  }
   }
 }
