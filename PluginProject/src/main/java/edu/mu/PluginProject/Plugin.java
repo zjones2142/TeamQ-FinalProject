@@ -25,7 +25,7 @@ public class Plugin extends JavaPlugin implements Listener
   private final Map<UUID, Scoreboard> boards = new HashMap<>();
   private final Map<UUID, CoordinateUI> coordUIs = new HashMap<>();
   public SetHome sethome = new SetHome();
-  public Location worldspawn = getServer().getWorld("world").getSpawnLocation();
+  public Location worldspawn = Bukkit.getWorld("world").getSpawnLocation();
   
   //HELPER METHODS vvvvvvvvvvvvvvvvvvvvvvvvvvvv
   
@@ -117,9 +117,10 @@ public class Plugin extends JavaPlugin implements Listener
   public void onPlayerRespawn(PlayerRespawnEvent event)
   {
 	  Player p = event.getPlayer();
-	  Location spawnLoc = this.sethome.getPlayerHomeLocation(p);
+	  Location spawnLoc = this.sethome.getPlayerHomeLocation(p); 
 	  if(spawnLoc == null)
 	  {
+		  p.sendMessage("No home set.");
 		  event.setRespawnLocation(this.worldspawn);
 	  }
 	  else

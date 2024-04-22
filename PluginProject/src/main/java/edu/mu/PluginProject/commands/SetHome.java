@@ -32,29 +32,39 @@ public class SetHome implements CommandExecutor {
 		
 		Player p = (Player) sender;
 		Location loc = p.getLocation();
-		p.sendMessage("Home Set!");
 		if(getPlayerHomeLocation(p) != loc)
 		{
 			setPlayerHomeLocation(p, loc);
+			Location loc1 = getPlayerHomeLocation(p); 
+			p.sendMessage("Home Set at ("+getLocationXYZText(loc1)+")");
+			return true;
 		}
-		return true;
+		else
+		{
+			p.sendMessage("Home already set at this location.");
+			return false;
+		}
 	}
 	
 	public Location getPlayerHomeLocation(Player p) 
 	{
 		return this.playerHomeLocations.get(p.getUniqueId());
 	}
+	
+	public String getLocationXYZText(Location loc)
+	{
+		int[] coords = {loc.getBlockX(), loc.getBlockY(), loc.getBlockZ()};
+		String text = "X: "+coords[0]+" | Y: "+coords[1]+" | Z: "+coords[2];
+		return text;
+	}
+	
+	public Map<UUID, Location> getPlayerHomeLocations() 
+	{
+		return this.playerHomeLocations;
+	}
 
 	public void setPlayerHomeLocation(Player p, Location loc) 
 	{
-		if(this.playerHomeLocations.containsKey(p.getUniqueId()))
-		{
-			this.playerHomeLocations.remove(p.getUniqueId());
-			this.playerHomeLocations.put(p.getUniqueId(), loc);
-		}
-		else
-		{
-			this.playerHomeLocations.put(p.getUniqueId(), loc);
-		}
+		this.playerHomeLocations.put(p.getUniqueId(), loc);
 	}
 }
