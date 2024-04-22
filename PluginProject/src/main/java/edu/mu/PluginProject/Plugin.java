@@ -21,6 +21,7 @@ public class Plugin extends JavaPlugin implements Listener
   private static final Logger LOGGER = Logger.getLogger("PluginProject");
   public PlayerManager playerManager = new PlayerManager();
   private final Map<UUID, Scoreboard> boards = new HashMap<>();
+  private final Map<UUID, CoordinateUI> coordUIs = new HashMap<>();
   
   //HELPER METHODS vvvvvvvvvvvvvvvvvvvvvvvvvvvv
   
@@ -104,6 +105,8 @@ public class Plugin extends JavaPlugin implements Listener
 	  Player p = event.getPlayer();
 	  this.playerManager.playerList.add(p);
 	  p.setScoreboard(createCoordinateScoreboard(p));
+	  CoordinateUI ui = new CoordinateUI();
+	  this.coordUIs.put(p.getUniqueId(), ui);
   }
   
   @EventHandler
@@ -134,11 +137,12 @@ public class Plugin extends JavaPlugin implements Listener
 	  {
 		  material = null;
 	  }
-	  
+	  CoordinateUI ui = this.coordUIs.get(p.getUniqueId());
 	  Scoreboard sb = this.boards.get(p.getUniqueId());
 	  if (material == Material.COMPASS)
 	  {
 		  sb.getObjective("test").setDisplaySlot(DisplaySlot.SIDEBAR);
+		  ui.openInventory(p);
 	  }
 	  else
 	  {

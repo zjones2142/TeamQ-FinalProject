@@ -26,12 +26,12 @@ public class CoordinateUI implements Listener{
 	
 	public void initInv()
 	{
-		this.inv.addItem(createGuiItem(Material.DIAMOND_SWORD, "Example Sword", "text"));
+		this.inv.addItem(createGuiItem(Material.MAP, "Example", "text"));
 	}
 	
 	public void openInventory(final HumanEntity ent) 
 	{
-        ent.openInventory(inv);
+        ent.openInventory(this.inv);
     }
 	
 	protected ItemStack createGuiItem(final Material material, final String name, final String... lore)
