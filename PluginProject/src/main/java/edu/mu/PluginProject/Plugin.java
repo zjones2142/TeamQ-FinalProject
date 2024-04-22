@@ -13,6 +13,7 @@ import org.bukkit.event.player.*;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.scoreboard.*;
 
+import edu.mu.PluginProject.commands.SetHome;
 import net.md_5.bungee.api.ChatMessageType;
 import net.md_5.bungee.api.chat.TextComponent;
 
@@ -90,6 +91,7 @@ public class Plugin extends JavaPlugin implements Listener
     LOGGER.info("PluginProject enabled");
     getServer().getPluginManager().registerEvents(this, this);
     Bukkit.getPluginManager().registerEvents(this, this);
+    getCommand("sethome").setExecutor(new SetHome());
   }
   
   @Override
