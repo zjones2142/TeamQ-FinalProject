@@ -6,6 +6,7 @@ import java.util.UUID;
 import java.util.logging.Logger;
 
 import org.bukkit.Bukkit;
+import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.event.*;
@@ -23,6 +24,8 @@ public class Plugin extends JavaPlugin implements Listener
   public PlayerManager playerManager = new PlayerManager();
   private final Map<UUID, Scoreboard> boards = new HashMap<>();
   private final Map<UUID, CoordinateUI> coordUIs = new HashMap<>();
+  public SetHome sethome = new SetHome();
+  public Location worldspawn = getServer().getWorld("world").getSpawnLocation();
   
   //HELPER METHODS vvvvvvvvvvvvvvvvvvvvvvvvvvvv
   
@@ -68,22 +71,6 @@ public class Plugin extends JavaPlugin implements Listener
 	  return result;
   }
   
-  //updates a players scoreboard object with current coordinates
-  public void updatePlayerBoard(Player p)
-  {
-//	  Scoreboard sb = this.boards.get(p.getUniqueId());
-//	  Objective ob = sb.getObjective("test");
-//	  int[] coords = getPlayerLocation(p);
-//	  
-//	  Score x = ob.getScore("X: ");
-//	  Score y = ob.getScore("Y: ");
-//	  Score z = ob.getScore("Z: ");
-//	  
-//	  x.setScore(coords[0]);
-//	  y.setScore(coords[1]);
-//	  z.setScore(coords[2]);
-  }
-  
   // ENABLE/DISABLE OVERRIDES vvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvv
   @Override
   public void onEnable()
@@ -124,6 +111,21 @@ public class Plugin extends JavaPlugin implements Listener
 	  Player p = event.getPlayer();
 	  String text = getPlayerLocationText(p);
 	  p.spigot().sendMessage(ChatMessageType.ACTION_BAR, TextComponent.fromLegacyText(text));
+  }
+  
+  @EventHandler
+  public void onPlayerRespawn(PlayerRespawnEvent event)
+  {
+	  Player p = event.getPlayer();
+	  Location spawnLoc = this.sethome.getPlayerHomeLocation(p);
+	  if(spawnLoc == null)
+	  {
+		  event.setRespawnLocation(this.worldspawn);
+	  }
+	  else
+	  {
+		  event.setRespawnLocation(spawnLoc);
+	  }
   }
   
   @EventHandler
