@@ -6,4 +6,8 @@ commands:
  sethome:
   description: sets player coords as home
   aliases: seth
-  usage: /sethome 
+  usage: /sethome
+ savloc:
+  description: saves current coords to ui
+  aliases: sloc
+  usage: /savloc 
