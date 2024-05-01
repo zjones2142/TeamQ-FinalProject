@@ -1,5 +1,7 @@
 package edu.mu.PluginProject;
 
+import java.io.File;
+import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
@@ -7,6 +9,7 @@ import java.util.logging.Logger;
 
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
+//import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.event.*;
@@ -19,11 +22,12 @@ import net.md_5.bungee.api.chat.TextComponent;
 
 public class Plugin extends JavaPlugin implements Listener
 {
-  private static Plugin instance;
+  public static Plugin instance;
   private static final Logger LOGGER = Logger.getLogger("PluginProject");
   public PlayerManager playerManager = new PlayerManager();
   private final Map<UUID, CoordinateUI> coordUIs = new HashMap<>();
-  public Location worldspawn = Bukkit.getWorld("world").getSpawnLocation();
+  public static File dataFolder;
+  //public Location worldspawn = Bukkit.getWorld("world").getSpawnLocation();
   
   //HELPER METHODS vvvvvvvvvvvvvvvvvvvvvvvvvvvv
   
@@ -54,8 +58,15 @@ public class Plugin extends JavaPlugin implements Listener
     LOGGER.info("PluginProject enabled");
     getServer().getPluginManager().registerEvents(this, this);
     Bukkit.getPluginManager().registerEvents(this, this);
+    instance = this;
     new SetHome();
     new SaveLocation();
+    dataFolder = getDataFolder();
+    if(!dataFolder.exists())
+    {
+    	getLogger().info("Creating data folder...");
+        dataFolder.mkdirs();
+    }
   }
   
   @Override
@@ -90,12 +101,6 @@ public class Plugin extends JavaPlugin implements Listener
   }
   
   @EventHandler
-  public void onPlayerRespawn(PlayerRespawnEvent event)
-  {
-	  //TODO: respawn player at home specified in file
-  }
-  
-  @EventHandler
   public void onPlayerHold(PlayerItemHeldEvent event)
   {
 	  Player p = event.getPlayer();
@@ -114,7 +119,25 @@ public class Plugin extends JavaPlugin implements Listener
 		  ui.openInventory(p);
 	  }
   }
-
+  
+  @EventHandler
+  public void onPlayerRespawn(PlayerRespawnEvent event) throws IOException
+  {
+	  Player p = event.getPlayer();
+	  Location loc;
+	  try {
+		  loc = SetHome.getPlayerHomeLocation(p);
+	  } catch (IOException e) {
+		  loc = null;
+		  LOGGER.info("Respawning "+p.getDisplayName()+" at player home failed.");
+	  }
+		  
+	  if(loc != null)
+	  {
+		  event.setRespawnLocation(loc);
+	  }
+  }
+  
   public static Plugin getInstance() 
   {
 	  return instance;

@@ -1,11 +1,18 @@
 package edu.mu.PluginProject.commands;
 
+import java.io.File;
+import java.io.IOException;
+
+import org.bukkit.Bukkit;
 import org.bukkit.Location;
+import org.bukkit.World;
 import org.bukkit.command.CommandSender;
+import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.Player;
 
+import edu.mu.PluginProject.Plugin;
+
 public class SetHome {
-	
 	public SetHome()
 	{
 		new CommandBase("sethome", 0, true) {
@@ -14,16 +21,20 @@ public class SetHome {
 			{
 				Player p = (Player) sender;
 				Location loc = p.getLocation();
-				if(getPlayerHomeLocation(p) != loc)
-				{
-					setPlayerHomeLocation(p, loc);
-					Location loc1 = getPlayerHomeLocation(p); 
-					p.sendMessage("Home Set at ("+getLocationXYZText(loc1)+")");
-					return true;
-				}
-				else
-				{
-					p.sendMessage("Home already set at this location.");
+				try {
+					if(getPlayerHomeLocation(p) != loc)
+					{
+						setPlayerHomeLocation(p, loc);
+						p.sendMessage("Home Set at ("+getLocationXYZText(loc)+")");
+						return true;
+					}
+					else
+					{
+						p.sendMessage("Home already set at this location.");
+						return false;
+					}
+				} catch (IOException e) {
+					e.printStackTrace();
 					return false;
 				}
 			}
@@ -35,9 +46,44 @@ public class SetHome {
 		};
 	}
 	
-	public Location getPlayerHomeLocation(Player p) 
+	public void setPlayerHomeLocation(Player p, Location loc) throws IOException 
 	{
-		return null;
+		File dataFolder = Plugin.getInstance().getDataFolder();
+		String filename = p.getDisplayName()+"-Home.yaml";
+		File file = new File(dataFolder, filename);
+
+		// Create a new YAML configuration object
+		YamlConfiguration config = new YamlConfiguration();
+	  
+		// Set location data using Location's built-in methods
+		config.set("world", p.getLocation().getWorld().getName());
+		config.set("x", p.getLocation().getX());
+		config.set("y", p.getLocation().getY());
+		config.set("z", p.getLocation().getZ());
+		config.set("yaw", p.getLocation().getYaw());
+		config.set("pitch", p.getLocation().getPitch());
+	  
+		// Save the configuration to the file
+		config.save(file);
+	}
+	
+	public static Location getPlayerHomeLocation(Player p) throws IOException
+	{
+		File dataFolder = Plugin.getInstance().getDataFolder();
+		String filename = p.getDisplayName()+"-Home.yaml";
+		File file = new File(dataFolder, filename);
+		// Load the YAML configuration from the file
+		YamlConfiguration config = YamlConfiguration.loadConfiguration(file);
+		  
+		// Get location data and create a Location object
+		World world = Bukkit.getWorld(config.getString("world"));
+		double x = config.getDouble("x");
+		double y = config.getDouble("y");
+		double z = config.getDouble("z");
+		float yaw = (float) config.getDouble("yaw"); // YAML stores doubles for floats
+		float pitch = (float) config.getDouble("pitch");
+		
+		return new Location(world, x, y, z, yaw, pitch);
 	}
 	
 	//helper for retrieving location in block coordinates
@@ -46,15 +92,5 @@ public class SetHome {
 		int[] coords = {loc.getBlockX(), loc.getBlockY(), loc.getBlockZ()};
 		String text = "X: "+coords[0]+" | Y: "+coords[1]+" | Z: "+coords[2];
 		return text;
-	}
-	
-	public void getPlayerHomeLocations() 
-	{
-		
-	}
-
-	public void setPlayerHomeLocation(Player p, Location loc) 
-	{
-	
 	}
 }

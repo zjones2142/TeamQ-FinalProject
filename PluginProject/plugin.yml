@@ -2,12 +2,3 @@ name: PluginProject
 main: edu.mu.PluginProject.Plugin
 version: 0.0.1-SNAPSHOT
 api-version: 1.15
-commands:
- sethome:
-  description: sets player coords as home
-  aliases: seth
-  usage: /sethome
- savloc:
-  description: saves current coords to ui
-  aliases: sloc
-  usage: /savloc 
