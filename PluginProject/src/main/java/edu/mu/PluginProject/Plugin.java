@@ -61,6 +61,7 @@ public class Plugin extends JavaPlugin implements Listener
     instance = this;
     new SetHome();
     new SaveLocation();
+    new Home();
     dataFolder = getDataFolder();
     if(!dataFolder.exists())
     {

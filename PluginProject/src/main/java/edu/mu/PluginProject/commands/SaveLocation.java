@@ -10,9 +10,10 @@ public class SaveLocation {
 	{
 		new CommandBase("saveloc", 1, true) {
 			@Override
-			public boolean onCommand(CommandSender sender, String [] args) {
+			public boolean onCommand(CommandSender sender, String[] args) {
 				Player p = (Player) sender;
 				Location loc = p.getLocation();
+				
 				//TODO: save location coords, + location name to file here
 				sender.sendMessage("location: "+args[0]+" at coordinates: "+getLocationXYZText(loc)+"has been saved");
 				return true;
@@ -30,5 +31,11 @@ public class SaveLocation {
 		int[] coords = {loc.getBlockX(), loc.getBlockY(), loc.getBlockZ()};
 		String text = "X: "+coords[0]+" | Y: "+coords[1]+" | Z: "+coords[2];
 		return text;
+	}
+	
+	public int[] getLocationXYZ(Location loc)
+	{
+		int[] coords = {loc.getBlockX(), loc.getBlockY(), loc.getBlockZ()};
+		return coords;
 	}
 }
