@@ -38,6 +38,7 @@ public class Plugin extends JavaPlugin implements Listener
 	  return coords;
   }
   
+  //returns player location coordinates in String format
   public String getPlayerLocationText(Player p)
   {
 	  int[] coords = getPlayerLocation(p);
@@ -50,6 +51,16 @@ public class Plugin extends JavaPlugin implements Listener
 	  int result = 0;
 	  return result;
   }
+  
+  public void createPlayerDataCSV(Player p) throws IOException {
+	  String filename = p.getDisplayName()+"-SavedLocations.csv";
+	  File csvFile = new File(dataFolder, filename);
+
+	  // Attempt to create the file
+	  if (!csvFile.createNewFile()) {
+	    getLogger().info("Player data CSV already exists: " + csvFile.getPath());
+	  }
+	}
   
   // ENABLE/DISABLE OVERRIDES vvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvv
   @Override
@@ -84,6 +95,7 @@ public class Plugin extends JavaPlugin implements Listener
 	  this.playerManager.playerList.add(p);
 	  CoordinateUI ui = new CoordinateUI();
 	  this.coordUIs.put(p.getUniqueId(), ui);
+	  try {createPlayerDataCSV(p);} catch (IOException e) {}
   }
   
   @EventHandler
