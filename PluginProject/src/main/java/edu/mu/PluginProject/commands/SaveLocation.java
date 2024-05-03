@@ -60,6 +60,11 @@ public class SaveLocation {
 		}
 	}
 	
+	public void addLocationToUI(Player p)
+	{
+		
+	}
+	
 	public String getLocationXYZText(Location loc)
 	{
 		int[] coords = {loc.getBlockX(), loc.getBlockY(), loc.getBlockZ()};
