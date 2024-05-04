@@ -25,7 +25,7 @@ public class Plugin extends JavaPlugin implements Listener
   public static Plugin instance;
   private static final Logger LOGGER = Logger.getLogger("PluginProject");
   public PlayerManager playerManager = new PlayerManager();
-  private final Map<UUID, CoordinateUI> coordUIs = new HashMap<>();
+  public final Map<UUID, CoordinateUI> coordUIs = new HashMap<>();
   public static File dataFolder;
   //public Location worldspawn = Bukkit.getWorld("world").getSpawnLocation();
   

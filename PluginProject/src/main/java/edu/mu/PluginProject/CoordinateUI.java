@@ -26,7 +26,17 @@ public class CoordinateUI implements Listener{
 	
 	public void initInv()
 	{
-		this.inv.addItem(createGuiItem(Material.COMPASS, "PlaceHolder", "0, 0, 0"));
+		this.inv.addItem(createGuiItem(Material.COMPASS, "PlaceHolder", 1, "0, 0, 0"));
+	}
+	
+	public void addGuiItem(final String name, final int num, final String... lore)
+	{
+		this.inv.addItem(createGuiItem(Material.MAP, name, num, lore));
+	}
+	
+	public void removeGuiItem()
+	{
+		
 	}
 	
 	public void openInventory(final HumanEntity ent) 
@@ -34,9 +44,9 @@ public class CoordinateUI implements Listener{
         ent.openInventory(this.inv);
     }
 	
-	protected ItemStack createGuiItem(final Material material, final String name, final String... lore)
+	protected ItemStack createGuiItem(final Material material, final String name, final int num, final String... lore)
 	{
-        final ItemStack item = new ItemStack(material, 1);
+        final ItemStack item = new ItemStack(material, num);
         final ItemMeta meta = item.getItemMeta();
 
         // Set the name of the item
@@ -49,6 +59,13 @@ public class CoordinateUI implements Listener{
 
         return item;
     }
+	
+	public int getNumInvSlotsRemaining()
+	{
+		int invSize = this.inv.getSize();
+		int remainingSlots = this.inv.getStorageContents().length;
+		return invSize - remainingSlots;
+	}
 	
 	@EventHandler
 	public void onInventoryClick(final InventoryClickEvent e)

@@ -6,6 +6,10 @@ import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.util.AbstractMap;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
 import java.util.Scanner;
 
 import org.bukkit.Location;
@@ -13,6 +17,7 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
 import edu.mu.PluginProject.Plugin;
+import edu.mu.PluginProject.CoordinateUI;
 
 public class SaveLocation {
 
@@ -25,6 +30,7 @@ public class SaveLocation {
 				Location loc = p.getLocation();
 				try {
 					writeLocationToPlayerFile(args[0],loc,p);
+					addLocationToUI(p);
 					sender.sendMessage("location: '"+args[0]+"' at coordinates: ("+getLocationXYZText(loc)+") has been saved");
 				} catch (IOException e) {
 					sender.sendMessage("Problem during location save.");
@@ -35,7 +41,7 @@ public class SaveLocation {
 			
 			@Override
 			public String getUsage() {
-				return "/saveloc";
+				return "/saveloc [location name]";
 			}
 		};
 	}
@@ -63,26 +69,18 @@ public class SaveLocation {
 		}
 	}
 	
-	public String[] readLocationFromPlayerFile(Player p) throws FileNotFoundException 
+	public List<Map.Entry<String,String>> readLocationFromPlayerFile(Player p) throws FileNotFoundException 
 	{
+		List<Map.Entry<String,String>> list = new ArrayList<>();
 	    Scanner scanner = null;
-	    String[] finalItemTitle;
-	    
+
 	    try {
 	      File dataFolder = Plugin.getInstance().getDataFolder();
 	      File csvFile = new File(dataFolder, p.getDisplayName() + "-SavedLocations.csv");
 	      scanner = new Scanner(new FileReader(csvFile));
-	      
-	      String[] itemTitle;
-	      String[] titles;
-	      String[] coords;
-	      
-	      String title;
-	      String x;
-	      String y;
-	      String z;
-	      
-	      int counter = 0;
+
+	      // Skip the header row (assuming the format is consistent)
+	      scanner.nextLine();
 
 	      while (scanner.hasNextLine()) {
 	        String line = scanner.nextLine();
@@ -94,37 +92,39 @@ public class SaveLocation {
 	          continue;
 	        }
 
-	        title = tokens[0];
-	        x = tokens[1];
-	        y = tokens[2];
-	        z = tokens[3];
-	        
-	        String xyz = x+", "+y+", "+z;
-	        titles[counter] = title;
-	        coords[counter] = xyz;
-	        
-	        counter++;
+	        String title = tokens[0];
+	        String coords = tokens[1]+", "+tokens[2]+", "+tokens[3];
+
+	        list.add(new AbstractMap.SimpleEntry<>(title, coords));
 	      }
-	      
-	      itemTitle[0] = titles[counter];
-	      itemTitle[1] = coords[counter];
-	      
-	      if (scanner != null) 
-	      {
+	    } finally {
+	      if (scanner != null) {
 	        scanner.close();
 	      }
-	      finalItemTitle = itemTitle;
-	    } catch(IOException e) {
-	    	finalItemTitle = null;
-	    	e.printStackTrace();
 	    }
 
-	    return finalItemTitle;
-	  }
+	    return list;
+	}
 	
 	public void addLocationToUI(Player p)
 	{
+		String title = "";
+		String coord = "";
+		int listLength = 1;
 		
+		try {
+			List<Map.Entry<String,String>> itemList = readLocationFromPlayerFile(p);
+			Map.Entry<String,String> item = itemList.getLast();
+			title = item.getKey();
+			coord = item.getValue();
+			listLength = itemList.size();
+			
+		} catch (FileNotFoundException e) {
+			e.printStackTrace();
+		}
+		CoordinateUI ui = Plugin.getInstance().coordUIs.get(p.getUniqueId());
+		ui.addGuiItem(title, listLength, coord);
+		ui.openInventory(p);
 	}
 	
 	public String getLocationXYZText(Location loc)
