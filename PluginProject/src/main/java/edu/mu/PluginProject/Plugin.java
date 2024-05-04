@@ -19,6 +19,7 @@ import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.event.*;
+import org.bukkit.event.block.Action;
 import org.bukkit.event.player.*;
 import org.bukkit.plugin.java.JavaPlugin;
 
@@ -186,20 +187,20 @@ public class Plugin extends JavaPlugin implements Listener
   }
   
   @EventHandler
-  public void onPlayerHold(PlayerItemHeldEvent event)
+  public void onPlayerInteractEvent(PlayerInteractEvent event)
   {
 	  Player p = event.getPlayer();
 	  Material material;
 	  try
 	  {
-		  material = p.getInventory().getItem(event.getNewSlot()).getType();
+		  material = p.getInventory().getItemInMainHand().getType();
 	  }
 	  catch(Exception e)
 	  {
 		  material = null;
 	  }
 	  CoordinateUI ui = this.coordUIs.get(p.getUniqueId());
-	  if (material == Material.COMPASS)
+	  if (material == Material.COMPASS && event.getAction() == Action.RIGHT_CLICK_AIR)
 	  {
 		  ui.openInventory(p);
 	  }

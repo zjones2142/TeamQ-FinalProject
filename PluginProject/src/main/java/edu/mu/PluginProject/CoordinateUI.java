@@ -20,7 +20,7 @@ public class CoordinateUI implements Listener{
 	public CoordinateUI() 
 	{
 		this.inv = Bukkit.createInventory(null, 9, "Saved Locations:");
-		initInv();
+		//initInv();
 	}
 	
 	public void initInv()
