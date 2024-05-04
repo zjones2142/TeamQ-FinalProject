@@ -1,9 +1,15 @@
 package edu.mu.PluginProject;
 
 import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileReader;
 import java.io.IOException;
+import java.util.AbstractMap;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
+import java.util.Scanner;
 import java.util.UUID;
 import java.util.logging.Logger;
 
@@ -19,6 +25,8 @@ import org.bukkit.plugin.java.JavaPlugin;
 import edu.mu.PluginProject.commands.*;
 import net.md_5.bungee.api.ChatMessageType;
 import net.md_5.bungee.api.chat.TextComponent;
+
+import edu.mu.PluginProject.commands.SaveLocation;
 
 public class Plugin extends JavaPlugin implements Listener
 {
@@ -52,7 +60,8 @@ public class Plugin extends JavaPlugin implements Listener
 	  return result;
   }
   
-  public void createPlayerDataCSV(Player p) throws IOException {
+  public void createPlayerDataCSV(Player p) throws IOException 
+  {
 	  String filename = p.getDisplayName()+"-SavedLocations.csv";
 	  File csvFile = new File(dataFolder, filename);
 
@@ -60,31 +69,34 @@ public class Plugin extends JavaPlugin implements Listener
 	  if (!csvFile.createNewFile()) {
 	    getLogger().info("Player data CSV already exists: " + csvFile.getPath());
 	  }
-	}
+  }
   
   // ENABLE/DISABLE OVERRIDES vvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvv
   @Override
   public void onEnable()
   {
-    LOGGER.info("PluginProject enabled");
-    getServer().getPluginManager().registerEvents(this, this);
-    Bukkit.getPluginManager().registerEvents(this, this);
-    instance = this;
-    new SetHome();
-    new SaveLocation();
-    new Home();
-    dataFolder = getDataFolder();
-    if(!dataFolder.exists())
-    {
-    	getLogger().info("Creating data folder...");
-        dataFolder.mkdirs();
-    }
+	  LOGGER.info("PluginProject enabled");
+	  getServer().getPluginManager().registerEvents(this, this);
+	  Bukkit.getPluginManager().registerEvents(this, this);
+	  instance = this;
+	  //registering commands vv
+	  new SetHome();
+	  new Home();
+	  new SaveLocation();
+	  new RemoveLocation();
+	  new CoordinateUI();
+	  dataFolder = getDataFolder();
+	  if(!dataFolder.exists())
+	  {
+		  getLogger().info("Creating data folder...");
+		  dataFolder.mkdirs();
+	  }
   }
   
   @Override
   public void onDisable()
   {
-    LOGGER.info("PluginProject disabled");
+	  LOGGER.info("PluginProject disabled");
   }
   
   //PLAYER EVENT HANDLERS vvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvv
@@ -96,8 +108,68 @@ public class Plugin extends JavaPlugin implements Listener
 	  CoordinateUI ui = new CoordinateUI();
 	  this.coordUIs.put(p.getUniqueId(), ui);
 	  try {createPlayerDataCSV(p);} catch (IOException e) {}
+	  if(p.hasPlayedBefore())
+	  {
+		  addPreviousSavedLocations(p);
+	  }
   }
   
+  public List<Map.Entry<String,String>> readLocationFromPlayerFile(Player p) throws FileNotFoundException 
+  {
+	  List<Map.Entry<String,String>> list = new ArrayList<>();
+	  Scanner scanner = null;
+
+	  try {
+		  File dataFolder = Plugin.getInstance().getDataFolder();
+		  File csvFile = new File(dataFolder, p.getDisplayName() + "-SavedLocations.csv");
+		  scanner = new Scanner(new FileReader(csvFile));
+
+		  while (scanner.hasNextLine()) {
+			  String line = scanner.nextLine();
+			  String[] tokens = line.split(",");
+
+			  if (tokens.length != 4) {
+				  // Handle invalid line format (optional)
+				  System.out.println("Warning: Invalid line format in CSV file");
+				  continue;
+			  }
+
+			  String title = tokens[0];
+			  String coords = tokens[1]+", "+tokens[2]+", "+tokens[3];
+
+			  list.add(new AbstractMap.SimpleEntry<>(title, coords));
+		  }
+	   } finally {
+		   if (scanner != null) {
+			   scanner.close();
+		   }
+	   }
+
+	   return list;
+  }
+  
+  public void addPreviousSavedLocations(Player p) 
+  {
+	  List<Map.Entry<String, String>> locList;
+	  CoordinateUI ui = this.coordUIs.get(p.getUniqueId());
+	  int count = 1;
+	  try {
+		  locList = readLocationFromPlayerFile(p);
+		  for(Map.Entry<String,String> entry : locList) 
+		  {
+			  ui.addGuiItem(entry.getKey(), count, entry.getValue());
+			  count++;
+			  if(count > 9) 
+			  {
+				  //breaks loop if number of locations in file is greater than 9
+				  continue;
+			  }
+		  }
+	  } catch (FileNotFoundException e) {
+		e.printStackTrace();
+	  }
+  }
+
   @EventHandler
   public void onPlayerQuit(PlayerQuitEvent event)
   {

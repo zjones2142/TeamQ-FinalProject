@@ -20,7 +20,6 @@ public class CoordinateUI implements Listener{
 	public CoordinateUI() 
 	{
 		this.inv = Bukkit.createInventory(null, 9, "Saved Locations:");
-		
 		initInv();
 	}
 	
@@ -32,11 +31,6 @@ public class CoordinateUI implements Listener{
 	public void addGuiItem(final String name, final int num, final String... lore)
 	{
 		this.inv.addItem(createGuiItem(Material.MAP, name, num, lore));
-	}
-	
-	public void removeGuiItem()
-	{
-		
 	}
 	
 	public void openInventory(final HumanEntity ent) 
