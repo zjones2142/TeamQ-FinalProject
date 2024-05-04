@@ -19,14 +19,14 @@ public class CoordinateUI implements Listener{
 
 	public CoordinateUI() 
 	{
-		this.inv = Bukkit.createInventory(null, 9, "Example");
+		this.inv = Bukkit.createInventory(null, 9, "Saved Locations:");
 		
 		initInv();
 	}
 	
 	public void initInv()
 	{
-		this.inv.addItem(createGuiItem(Material.MAP, "Example", "text"));
+		this.inv.addItem(createGuiItem(Material.COMPASS, "PlaceHolder", "0, 0, 0"));
 	}
 	
 	public void openInventory(final HumanEntity ent) 

@@ -2,8 +2,11 @@ package edu.mu.PluginProject.commands;
 
 import java.io.BufferedWriter;
 import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.util.Scanner;
 
 import org.bukkit.Location;
 import org.bukkit.command.CommandSender;
@@ -59,6 +62,65 @@ public class SaveLocation {
 		    writer.close();
 		}
 	}
+	
+	public String[] readLocationFromPlayerFile(Player p) throws FileNotFoundException 
+	{
+	    Scanner scanner = null;
+	    String[] finalItemTitle;
+	    
+	    try {
+	      File dataFolder = Plugin.getInstance().getDataFolder();
+	      File csvFile = new File(dataFolder, p.getDisplayName() + "-SavedLocations.csv");
+	      scanner = new Scanner(new FileReader(csvFile));
+	      
+	      String[] itemTitle;
+	      String[] titles;
+	      String[] coords;
+	      
+	      String title;
+	      String x;
+	      String y;
+	      String z;
+	      
+	      int counter = 0;
+
+	      while (scanner.hasNextLine()) {
+	        String line = scanner.nextLine();
+	        String[] tokens = line.split(",");
+
+	        if (tokens.length != 4) {
+	          // Handle invalid line format (optional)
+	          System.out.println("Warning: Invalid line format in CSV file");
+	          continue;
+	        }
+
+	        title = tokens[0];
+	        x = tokens[1];
+	        y = tokens[2];
+	        z = tokens[3];
+	        
+	        String xyz = x+", "+y+", "+z;
+	        titles[counter] = title;
+	        coords[counter] = xyz;
+	        
+	        counter++;
+	      }
+	      
+	      itemTitle[0] = titles[counter];
+	      itemTitle[1] = coords[counter];
+	      
+	      if (scanner != null) 
+	      {
+	        scanner.close();
+	      }
+	      finalItemTitle = itemTitle;
+	    } catch(IOException e) {
+	    	finalItemTitle = null;
+	    	e.printStackTrace();
+	    }
+
+	    return finalItemTitle;
+	  }
 	
 	public void addLocationToUI(Player p)
 	{
