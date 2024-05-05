@@ -92,10 +92,4 @@ public class SaveLocation {
 		String text = "X: "+coords[0]+" | Y: "+coords[1]+" | Z: "+coords[2];
 		return text;
 	}
-	
-	public int[] getLocationXYZ(Location loc)
-	{
-		int[] coords = {loc.getBlockX(), loc.getBlockY(), loc.getBlockZ()};
-		return coords;
-	}
 }

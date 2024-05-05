@@ -47,6 +47,12 @@ public class Plugin extends JavaPlugin implements Listener
 	  return coords;
   }
   
+  public int[] getLocationXYZ(Location loc)
+  {
+	  int[] coords = {loc.getBlockX(), loc.getBlockY(), loc.getBlockZ()};
+	  return coords;
+  }
+  
   //returns player location coordinates in String format
   public String getPlayerLocationText(Player p)
   {
