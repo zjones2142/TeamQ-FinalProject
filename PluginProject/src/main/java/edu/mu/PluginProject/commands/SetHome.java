@@ -11,6 +11,7 @@ import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.Player;
 
 import edu.mu.PluginProject.Plugin;
+import edu.mu.PluginProject.utils.CommandBase;
 
 public class SetHome {
 	public SetHome()

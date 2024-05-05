@@ -1,4 +1,4 @@
-package edu.mu.PluginProject;
+package edu.mu.PluginProject.utils;
 
 public class UIItemContainer {
 	

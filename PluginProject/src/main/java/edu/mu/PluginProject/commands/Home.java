@@ -6,6 +6,8 @@ import org.bukkit.Location;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
+import edu.mu.PluginProject.utils.CommandBase;
+
 public class Home {
 
 	public Home() {

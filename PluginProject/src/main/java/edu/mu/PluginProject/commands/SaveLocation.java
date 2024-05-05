@@ -13,7 +13,8 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
 import edu.mu.PluginProject.Plugin;
-import edu.mu.PluginProject.CoordinateUI;
+import edu.mu.PluginProject.utils.CommandBase;
+import edu.mu.PluginProject.utils.CoordinateUI;
 
 public class SaveLocation {
 
