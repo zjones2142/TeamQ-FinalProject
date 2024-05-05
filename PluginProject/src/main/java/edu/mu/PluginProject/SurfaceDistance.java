@@ -27,14 +27,16 @@ public class SurfaceDistance extends JavaPlugin implements Listener{
         Player player = event.getPlayer();
         Location currentLocation = player.getLocation();
         Location highestBlock = player.getWorld().getHighestBlockAt(currentLocation.getBlockX(), currentLocation.getBlockZ()).getLocation();
+        
+        Material highestBlockType = player.getWorld().getHighestBlockAt(currentLocation.getBlockX(), currentLocation.getBlockZ()).getType();
 
         //check player's y-level
         int distanceToSurface = highestBlock.getBlockY() - currentLocation.getBlockY();
-        
-        if(distanceToSurface >= 0){
+
+        if(highestBlockType == Material.AIR && distanceToSurface >=0 ){
             player.sendMessage("Distance to the surface: " + distanceToSurface + " blocks.");
         } else {
-            player.sendMessage("You are already at surface level");
+            player.sendMessage("You are already at surface level or you are under a tree");
         }
     }
 }
