@@ -39,7 +39,6 @@ public class Plugin extends JavaPlugin implements Listener
 {
   public static Plugin instance;
   private static final Logger LOGGER = Logger.getLogger("PluginProject");
-  public PlayerManager playerManager = new PlayerManager();
   public final Map<UUID, CoordinateUI> coordUIs = new HashMap<>();
   public static File dataFolder;
   //public Location worldspawn = Bukkit.getWorld("world").getSpawnLocation();
@@ -98,6 +97,7 @@ public class Plugin extends JavaPlugin implements Listener
 	  new SaveLocation();
 	  new RemoveLocation();
 	  new CoordinateUI();
+	  new GetDistanceToSurface();
 	  dataFolder = getDataFolder();
 	  if(!dataFolder.exists())
 	  {
@@ -116,9 +116,8 @@ public class Plugin extends JavaPlugin implements Listener
   @EventHandler
   public void onPlayerJoin(PlayerJoinEvent event)
   {
-	  //register player
+	  //grab player object
 	  Player p = event.getPlayer();
-	  this.playerManager.playerList.add(p);
 	  //create save location UI and place in hashmap
 	  CoordinateUI ui = new CoordinateUI();
 	  this.coordUIs.put(p.getUniqueId(), ui);
