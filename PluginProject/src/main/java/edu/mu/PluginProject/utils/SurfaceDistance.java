@@ -1,4 +1,4 @@
-package edu.mu.PluginProject;
+package edu.mu.PluginProject.utils;
 
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
