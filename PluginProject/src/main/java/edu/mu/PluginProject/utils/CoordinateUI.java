@@ -23,11 +23,6 @@ public class CoordinateUI implements Listener{
 		//initInv();
 	}
 	
-	public void initInv()
-	{
-		this.inv.addItem(createGuiItem(Material.COMPASS, "PlaceHolder", 1, "0, 0, 0"));
-	}
-	
 	public void addGuiItem(final String name, final int num, final String... lore)
 	{
 		this.inv.addItem(createGuiItem(Material.MAP, name, num, lore));

@@ -46,7 +46,7 @@ public class Plugin extends JavaPlugin implements Listener
   //HELPER METHODS vvvvvvvvvvvvvvvvvvvvvvvvvvvv
   
   //returns array of player coordinates in {x,y,z} format
-  public int[] getPlayerLocation(Player p) 
+  public int[] getPlayerLocationArray(Player p) 
   {
 	  int[] coords = {p.getLocation().getBlockX(), p.getLocation().getBlockY(), p.getLocation().getBlockZ()};
 	  return coords;
@@ -61,7 +61,7 @@ public class Plugin extends JavaPlugin implements Listener
   //returns player location coordinates in String format
   public String getPlayerLocationText(Player p)
   {
-	  int[] coords = getPlayerLocation(p);
+	  int[] coords = getPlayerLocationArray(p);
 	  String text = "X: "+coords[0]+" | Y: "+coords[1]+" | Z: "+coords[2];
 	  return text;
   }
@@ -196,13 +196,6 @@ public class Plugin extends JavaPlugin implements Listener
 	  obj.setDisplaySlot(DisplaySlot.BELOW_NAME);
 	  
 	  p.setScoreboard(board);
-  }
-
-  @EventHandler
-  public void onPlayerQuit(PlayerQuitEvent event)
-  {
-	  Player p = event.getPlayer();
-	  LOGGER.info(p.getDisplayName()+" has quit");
   }
   
   @EventHandler
