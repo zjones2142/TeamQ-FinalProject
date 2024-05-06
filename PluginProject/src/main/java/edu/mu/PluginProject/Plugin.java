@@ -110,7 +110,7 @@ public class Plugin extends JavaPlugin implements Listener
 	  //create save location UI and place in hashmap
 	  CoordinateUI ui = new CoordinateUI();
 	  this.coordUIs.put(p.getUniqueId(), ui);
-	  //create player "save location" data csv if it doesn't allready exist
+	  //create player "save location" data csv if it doesn't already exist
 	  try {createPlayerDataCSV(p);} catch (IOException e) {}
 	  //if player HAS played before, restore previously saved locations from file
 	  if(p.hasPlayedBefore())
@@ -179,7 +179,8 @@ public class Plugin extends JavaPlugin implements Listener
 		e.printStackTrace();
 	  }
   }
-  
+
+  //creates a scoreboard object for the player to display health stat
   public void createPlayerHealthScoreBoard(Player p)
   {
 	  Scoreboard board = Bukkit.getScoreboardManager().getNewScoreboard();
