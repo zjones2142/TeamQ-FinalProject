@@ -31,7 +31,7 @@ public class SetHome {
 					if(getPlayerHomeLocation(p) != loc)
 					{
 						setPlayerHomeLocation(p, loc);
-						p.sendMessage("Home Set at ("+getLocationXYZText(loc)+")");
+						p.sendMessage("Home Set at ("+Plugin.getInstance().getLocationXYZText(loc)+")");
 						return true;
 					}
 					else
@@ -53,8 +53,7 @@ public class SetHome {
 	}
 	
 
-	/*  This method writes the player location file with the provided location. 
-	Method adds player location “ x, y, z, yaw, pitch”. */
+	//writes the desired location to player home data file
 	public void setPlayerHomeLocation(Player p, Location loc) throws IOException 
 	{
 		File dataFolder = Plugin.getInstance().getDataFolder();
@@ -76,7 +75,7 @@ public class SetHome {
 		config.save(file);
 	}
 	
-	/* This method reads the player home data file YAML and returns a location object. */
+	//reads the player home data file and returns a location object
 	public static Location getPlayerHomeLocation(Player p) throws IOException
 	{
 		File dataFolder = Plugin.getInstance().getDataFolder();
@@ -94,13 +93,5 @@ public class SetHome {
 		float pitch = (float) config.getDouble("pitch");
 		
 		return new Location(world, x, y, z, yaw, pitch);
-	}
-	
-	//helper for retrieving location in block coordinates
-	public String getLocationXYZText(Location loc)
-	{
-		int[] coords = {loc.getBlockX(), loc.getBlockY(), loc.getBlockZ()};
-		String text = "X: "+coords[0]+" | Y: "+coords[1]+" | Z: "+coords[2];
-		return text;
 	}
 }

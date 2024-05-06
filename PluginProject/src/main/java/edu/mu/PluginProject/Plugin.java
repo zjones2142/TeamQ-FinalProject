@@ -52,6 +52,14 @@ public class Plugin extends JavaPlugin implements Listener
 	  return coords;
   }
   
+  //helper for retrieving coordinate data of location in string format 
+  public String getLocationXYZText(Location loc)
+  {
+	  int[] coords = getLocationXYZ(loc);
+	  String text = "X: "+coords[0]+" | Y: "+coords[1]+" | Z: "+coords[2];
+	  return text;
+  }
+  
   //returns player location coordinates in String format
   public String getPlayerLocationText(Player p)
   {
@@ -73,6 +81,9 @@ public class Plugin extends JavaPlugin implements Listener
   }
   
   // ENABLE/DISABLE OVERRIDES vvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvv
+  
+  //runs everything in this block when server enables the plugin
+  //mainly registers classes and creates data folder if being enabled on new server
   @Override
   public void onEnable()
   {
@@ -96,6 +107,7 @@ public class Plugin extends JavaPlugin implements Listener
 	  }
   }
   
+  //runs when server disables plugin
   @Override
   public void onDisable()
   {
@@ -103,6 +115,9 @@ public class Plugin extends JavaPlugin implements Listener
   }
   
   //PLAYER EVENT HANDLERS vvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvv
+  
+  //code block executed on player join
+  //creates location ui, datafiles, and health display
   @EventHandler
   public void onPlayerJoin(PlayerJoinEvent event)
   {
@@ -123,7 +138,7 @@ public class Plugin extends JavaPlugin implements Listener
   }
   
   
-  /* This method reads the save location CSV file of the given player and returns a list of the locations stored in the CSV. */
+  //reads the save location CSV file of the given player and returns a list of the locations stored there
   public List<Map.Entry<String,String>> readLocationFromPlayerFile(Player p) throws FileNotFoundException 
   {
 	  List<Map.Entry<String,String>> list = new ArrayList<>();
@@ -158,7 +173,7 @@ public class Plugin extends JavaPlugin implements Listener
 	   return list;
   }
   
-  /*  if the player has previously saved location(s) within the data file, this method adds those locations to the GUI generated when the player joins. */
+  //if the player has previously saved location(s) within the data file, this adds those locations to given player's location ui
   public void addPreviousSavedLocations(Player p) 
   {
 	  List<Map.Entry<String, String>> locList;
@@ -192,6 +207,8 @@ public class Plugin extends JavaPlugin implements Listener
 	  p.setScoreboard(board);
   }
   
+  //executes when player moves
+  //handles displaying of current coordinates (sends them to player's action bar)
   @EventHandler
   public void onPlayerMove(PlayerMoveEvent event)
   {
@@ -200,6 +217,8 @@ public class Plugin extends JavaPlugin implements Listener
 	  p.spigot().sendMessage(ChatMessageType.ACTION_BAR, TextComponent.fromLegacyText(text));
   }
   
+  //executes when player interacts with an object
+  //handles the opening of the saved location ui when a player right clicks with a compass in hand
   @EventHandler
   public void onPlayerInteractEvent(PlayerInteractEvent event)
   {
@@ -220,6 +239,8 @@ public class Plugin extends JavaPlugin implements Listener
 	  }
   }
   
+  //executes when a player hits respawn button
+  //handles the respawn at player home set with command "/sethome"
   @EventHandler
   public void onPlayerRespawn(PlayerRespawnEvent event) throws IOException
   {
@@ -241,6 +262,7 @@ public class Plugin extends JavaPlugin implements Listener
 	  }
   }
   
+  //helper for grabbing plugin instance (used for non-static file reading methods stored in this class, as well as getting the data folder path)
   public static Plugin getInstance() 
   {
 	  return instance;

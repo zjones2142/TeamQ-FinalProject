@@ -28,7 +28,7 @@ public class SaveLocation {
 				try {
 					writeLocationToPlayerFile(args[0],loc,p);
 					addLocationToUI(p);
-					sender.sendMessage("Location: '"+args[0]+"' at coordinates: ("+getLocationXYZText(loc)+") has been saved");
+					sender.sendMessage("Location: '"+args[0]+"' at coordinates: ("+Plugin.getInstance().getLocationXYZText(loc)+") has been saved");
 				} catch (IOException e) {
 					sender.sendMessage("Problem during location save.");
 					e.printStackTrace();
@@ -43,6 +43,7 @@ public class SaveLocation {
 		};
 	}
 	
+	//writes the desired location to players csv data file
 	public void writeLocationToPlayerFile(String title, Location loc, Player p) throws IOException
 	{
 		int x = loc.getBlockX();
@@ -66,6 +67,7 @@ public class SaveLocation {
 		}
 	}
 	
+	//adds most recently stored location in csv file to the specified player's location ui
 	public void addLocationToUI(Player p)
 	{
 		String title = "";
@@ -85,12 +87,5 @@ public class SaveLocation {
 		CoordinateUI ui = Plugin.getInstance().coordUIs.get(p.getUniqueId());
 		ui.addGuiItem(title, listLength, coord);
 		ui.openInventory(p);
-	}
-	
-	public String getLocationXYZText(Location loc)
-	{
-		int[] coords = {loc.getBlockX(), loc.getBlockY(), loc.getBlockZ()};
-		String text = "X: "+coords[0]+" | Y: "+coords[1]+" | Z: "+coords[2];
-		return text;
 	}
 }

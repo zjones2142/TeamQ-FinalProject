@@ -23,6 +23,7 @@ public abstract class CommandBase extends BukkitCommand implements CommandExecut
 	private final int maxArgs;
 	private final boolean playerOnly;
 
+	//contructor for command objects, overloaded depending on the desired cutomization options
 	public CommandBase(String command) {
 		this(command, 0);
 	}
@@ -56,6 +57,7 @@ public abstract class CommandBase extends BukkitCommand implements CommandExecut
 		}
 	}
 	
+	//retrieves command map, used so that a command can be registered with the server when an instance is constructed in the main class
 	public CommandMap getCommandMap() {
 		try {
 			if(Bukkit.getPluginManager() instanceof SimplePluginManager) {
@@ -71,20 +73,24 @@ public abstract class CommandBase extends BukkitCommand implements CommandExecut
 		return null;
 	}
 	
+	//enables desired delay in player execution of the command
 	public CommandBase enableDelay(int delay) {
 		this.delay = delay;
 		this.delayedPlayers = new ArrayList<>();
 		return this;
 	}
 	
+	//removes delay
 	public void removeDelay(Player p) {
 		this.delayedPlayers.remove(p.getName());
 	}
 	
+	//sends player the usage of command
 	public void sendUsage(CommandSender sender) {
 		sender.sendMessage(getUsage());
 	}
 	
+	//executes given command
 	public boolean execute(CommandSender sender, String alias, String [] args) {
 		if(args.length < minArgs || (args.length > maxArgs && maxArgs != -1)) {
 			sendUsage(sender);
@@ -122,11 +128,14 @@ public abstract class CommandBase extends BukkitCommand implements CommandExecut
 		return true;
 	}
 	
+	//non abstract onCommand specification (required for all classes that implement "CommandExecutor" interface)
 	public boolean onCommand(CommandSender sender, Command command, String alias, String [] args) {
 		return this.onCommand(sender, args);
 	}
 	
+	//abstract onCommand for specifying what happens when a command is run, to be implemented by all custom commands that use CommandBase
 	public abstract boolean onCommand(CommandSender sender, String [] args);
 	
+	//abstract getUsage for specifying to player the usage (implementation will depend on desired arguments for the specific command)
 	public abstract String getUsage();
 }

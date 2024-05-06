@@ -34,6 +34,7 @@ public class Home {
 		};
 	}
 	
+	//retrieves player home location data from file
 	public static Location getPlayerHomeLocationBuffer(Player p) {
 		Location loc;
 		try {

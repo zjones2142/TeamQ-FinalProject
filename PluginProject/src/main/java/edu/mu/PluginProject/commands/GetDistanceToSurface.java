@@ -31,6 +31,7 @@ public class GetDistanceToSurface {
         };
    }
    
+   //calculates distance to surface using the player location and the highest block at that X,Z column in the world
    public int calculateDistanceToSurface(Player p)
    {
 	   Location currentLocation = p.getLocation();

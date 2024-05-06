@@ -29,6 +29,7 @@ public class GetDistanceToHome {
 		};
 	}
 	
+	//calculates distance between two locations using 3d coordinates,  returns rounded int indicating number of blocks
 	public int calculateDistance(Location loc1, Location loc2)
 	  {
 	      //get location data
