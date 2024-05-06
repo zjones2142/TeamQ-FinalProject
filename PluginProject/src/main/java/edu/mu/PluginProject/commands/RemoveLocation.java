@@ -45,7 +45,7 @@ public class RemoveLocation {
 			}
 		};
 	}
-
+	//removes location with specified name from player data file
 	public Boolean removeLocationFromPlayerFile(String string, Player p) throws IOException
 	{
 		File dataFolder = Plugin.getInstance().getDataFolder();
