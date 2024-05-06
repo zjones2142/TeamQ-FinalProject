@@ -1,4 +1,4 @@
-package edu.mu.PluginProject.commands;
+package edu.mu.PluginProject.utils;
 
 import edu.mu.PluginProject.Plugin;
 

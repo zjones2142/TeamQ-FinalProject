@@ -22,18 +22,23 @@ import org.bukkit.event.*;
 import org.bukkit.event.block.Action;
 import org.bukkit.event.player.*;
 import org.bukkit.plugin.java.JavaPlugin;
+import org.bukkit.scoreboard.Criterias;
+import org.bukkit.scoreboard.DisplaySlot;
+import org.bukkit.scoreboard.Objective;
+import org.bukkit.scoreboard.Scoreboard;
 
 import edu.mu.PluginProject.commands.*;
+import net.md_5.bungee.api.ChatColor;
 import net.md_5.bungee.api.ChatMessageType;
 import net.md_5.bungee.api.chat.TextComponent;
 
 import edu.mu.PluginProject.commands.SaveLocation;
+import edu.mu.PluginProject.utils.CoordinateUI;
 
 public class Plugin extends JavaPlugin implements Listener
 {
   public static Plugin instance;
   private static final Logger LOGGER = Logger.getLogger("PluginProject");
-  public PlayerManager playerManager = new PlayerManager();
   public final Map<UUID, CoordinateUI> coordUIs = new HashMap<>();
   public static File dataFolder;
   //public Location worldspawn = Bukkit.getWorld("world").getSpawnLocation();
@@ -41,12 +46,6 @@ public class Plugin extends JavaPlugin implements Listener
   //HELPER METHODS vvvvvvvvvvvvvvvvvvvvvvvvvvvv
   
   //returns array of player coordinates in {x,y,z} format
-  public int[] getPlayerLocation(Player p) 
-  {
-	  int[] coords = {p.getLocation().getBlockX(), p.getLocation().getBlockY(), p.getLocation().getBlockZ()};
-	  return coords;
-  }
-  
   public int[] getLocationXYZ(Location loc)
   {
 	  int[] coords = {loc.getBlockX(), loc.getBlockY(), loc.getBlockZ()};
@@ -56,15 +55,9 @@ public class Plugin extends JavaPlugin implements Listener
   //returns player location coordinates in String format
   public String getPlayerLocationText(Player p)
   {
-	  int[] coords = getPlayerLocation(p);
+	  int[] coords = getLocationXYZ(p.getLocation());
 	  String text = "X: "+coords[0]+" | Y: "+coords[1]+" | Z: "+coords[2];
 	  return text;
-  }
-  
-  public int getPlayerDistanceFromSurface(Player p)
-  {
-	  int result = 0;
-	  return result;
   }
   
   public void createPlayerDataCSV(Player p) throws IOException 
@@ -92,6 +85,8 @@ public class Plugin extends JavaPlugin implements Listener
 	  new SaveLocation();
 	  new RemoveLocation();
 	  new CoordinateUI();
+	  new GetDistanceToSurface();
+	  new GetDistanceToHome();
 	  dataFolder = getDataFolder();
 	  if(!dataFolder.exists())
 	  {
@@ -110,15 +105,20 @@ public class Plugin extends JavaPlugin implements Listener
   @EventHandler
   public void onPlayerJoin(PlayerJoinEvent event)
   {
+	  //grab player object
 	  Player p = event.getPlayer();
-	  this.playerManager.playerList.add(p);
+	  //create save location UI and place in hashmap
 	  CoordinateUI ui = new CoordinateUI();
 	  this.coordUIs.put(p.getUniqueId(), ui);
+	  //create player "save location" data csv if it doesn't allready exist
 	  try {createPlayerDataCSV(p);} catch (IOException e) {}
+	  //if player HAS played before, restore previously saved locations from file
 	  if(p.hasPlayedBefore())
 	  {
 		  addPreviousSavedLocations(p);
 	  }
+	  //create "scoreboard" for displaying player health
+	  createPlayerHealthScoreBoard(p);
   }
   
   
@@ -179,12 +179,15 @@ public class Plugin extends JavaPlugin implements Listener
 		e.printStackTrace();
 	  }
   }
-
-  @EventHandler
-  public void onPlayerQuit(PlayerQuitEvent event)
+  
+  public void createPlayerHealthScoreBoard(Player p)
   {
-	  Player p = event.getPlayer();
-	  LOGGER.info(p.getDisplayName()+" has quit");
+	  Scoreboard board = Bukkit.getScoreboardManager().getNewScoreboard();
+	  Objective obj = board.registerNewObjective(this+"_health", Criterias.HEALTH, ChatColor.RED+"❤︎");
+	  
+	  obj.setDisplaySlot(DisplaySlot.BELOW_NAME);
+	  
+	  p.setScoreboard(board);
   }
   
   @EventHandler
@@ -209,7 +212,7 @@ public class Plugin extends JavaPlugin implements Listener
 		  material = null;
 	  }
 	  CoordinateUI ui = this.coordUIs.get(p.getUniqueId());
-	  if (material == Material.COMPASS && event.getAction() == Action.RIGHT_CLICK_AIR)
+	  if (material == Material.COMPASS && (event.getAction() == Action.RIGHT_CLICK_AIR || event.getAction() == Action.RIGHT_CLICK_BLOCK))
 	  {
 		  ui.openInventory(p);
 	  }
@@ -230,6 +233,9 @@ public class Plugin extends JavaPlugin implements Listener
 	  if(loc != null)
 	  {
 		  event.setRespawnLocation(loc);
+	  }
+	  else {
+		  p.sendMessage("No home was set with command '/sethome'");
 	  }
   }
   

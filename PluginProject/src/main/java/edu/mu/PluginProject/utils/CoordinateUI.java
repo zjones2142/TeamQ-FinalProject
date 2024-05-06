@@ -1,4 +1,4 @@
-package edu.mu.PluginProject;
+package edu.mu.PluginProject.utils;
 
 import java.util.Arrays;
 
@@ -21,11 +21,6 @@ public class CoordinateUI implements Listener{
 	{
 		this.inv = Bukkit.createInventory(null, 9, "Saved Locations:");
 		//initInv();
-	}
-	
-	public void initInv()
-	{
-		this.inv.addItem(createGuiItem(Material.COMPASS, "PlaceHolder", 1, "0, 0, 0"));
 	}
 	
 	public void addGuiItem(final String name, final int num, final String... lore)
