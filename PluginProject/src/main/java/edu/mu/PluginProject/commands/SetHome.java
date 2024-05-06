@@ -13,6 +13,11 @@ import org.bukkit.entity.Player;
 import edu.mu.PluginProject.Plugin;
 
 public class SetHome {
+	
+	/* Constructor implements the “/sethome” command. Which sets If the present location 
+	is different than the previous recorded location then it overwrites the file with present 
+	location and sends the set location to the player “Home set at {location}”. If the location 
+	is the same it messages the player “Home already set at this location.” */
 	public SetHome()
 	{
 		new CommandBase("sethome", 0, true) {
@@ -46,6 +51,9 @@ public class SetHome {
 		};
 	}
 	
+
+	/*  This method writes the player location file with the provided location. 
+	Method adds player location “ x, y, z, yaw, pitch”. */
 	public void setPlayerHomeLocation(Player p, Location loc) throws IOException 
 	{
 		File dataFolder = Plugin.getInstance().getDataFolder();
@@ -67,6 +75,7 @@ public class SetHome {
 		config.save(file);
 	}
 	
+	/* This method reads the player home data file YAML and returns a location object. */
 	public static Location getPlayerHomeLocation(Player p) throws IOException
 	{
 		File dataFolder = Plugin.getInstance().getDataFolder();

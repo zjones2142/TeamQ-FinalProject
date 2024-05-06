@@ -121,6 +121,8 @@ public class Plugin extends JavaPlugin implements Listener
 	  }
   }
   
+  
+  /* This method reads the save location CSV file of the given player and returns a list of the locations stored in the CSV. */
   public List<Map.Entry<String,String>> readLocationFromPlayerFile(Player p) throws FileNotFoundException 
   {
 	  List<Map.Entry<String,String>> list = new ArrayList<>();
@@ -155,6 +157,7 @@ public class Plugin extends JavaPlugin implements Listener
 	   return list;
   }
   
+  /*  if the player has previously saved location(s) within the data file, this method adds those locations to the GUI generated when the player joins. */
   public void addPreviousSavedLocations(Player p) 
   {
 	  List<Map.Entry<String, String>> locList;
