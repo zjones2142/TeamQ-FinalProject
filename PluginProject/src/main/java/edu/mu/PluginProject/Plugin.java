@@ -60,6 +60,7 @@ public class Plugin extends JavaPlugin implements Listener
 	  return text;
   }
   
+  //creates player data csv if it doesn't exist
   public void createPlayerDataCSV(Player p) throws IOException 
   {
 	  String filename = p.getDisplayName()+"-SavedLocations.csv";
