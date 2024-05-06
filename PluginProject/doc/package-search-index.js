@@ -1,0 +1,1 @@
+packageSearchIndex = [{"l":"All Packages","u":"allpackages-index.html"},{"l":"edu.mu.PluginProject"},{"l":"edu.mu.PluginProject.commands"},{"l":"edu.mu.PluginProject.utils"}];updateSearchResults();
