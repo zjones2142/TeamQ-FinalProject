@@ -34,7 +34,7 @@ public class Home {
 		};
 	}
 	
-	public Location getPlayerHomeLocationBuffer(Player p) {
+	public static Location getPlayerHomeLocationBuffer(Player p) {
 		Location loc;
 		try {
 			loc = SetHome.getPlayerHomeLocation(p);

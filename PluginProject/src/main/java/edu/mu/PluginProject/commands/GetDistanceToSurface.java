@@ -13,27 +13,29 @@ public class GetDistanceToSurface {
         new CommandBase("surfacedistance", 0, true) {
             @Override
             public boolean onCommand(CommandSender sender, String [] args) {
-            	Player player = (Player) sender;
-                Location currentLocation = player.getLocation();
-                int highestBlock = player.getWorld().getHighestBlockAt(currentLocation.getBlockX(), currentLocation.getBlockZ()).getY();
-                
-                //Material highestBlockType = player.getWorld().getHighestBlockAt(currentLocation.getBlockX(), currentLocation.getBlockZ()).getType();
-
-                //check player's y-level
-                int distanceToSurface = highestBlock - currentLocation.getBlockY()-1;
+            	Player p = (Player) sender;
+            	int distanceToSurface = calculateDistanceToSurface(p);
 
                 if(distanceToSurface >= 0 ){
-                    player.sendMessage("Distance to the surface: " + distanceToSurface + " blocks.");
+                    p.sendMessage("You are " + distanceToSurface + " blocks from the surface (or there is no block above you)");
                 } else {
-                    player.sendMessage("You are already at surface level or you are under a tree");
+                    p.sendMessage("You are already at surface level.");
                 }
                 return true;
             }
 
             @Override
-            public String getUsage(){
+            public String getUsage() {
                 return "/surfacedistance";
             }
         };
-    }
+   }
+   
+   public int calculateDistanceToSurface(Player p)
+   {
+	   Location currentLocation = p.getLocation();
+       int highestBlock = p.getWorld().getHighestBlockAt(currentLocation.getBlockX(), currentLocation.getBlockZ()).getY();
+       int result = highestBlock - currentLocation.getBlockY()-1;
+	   return result;
+   }
 }

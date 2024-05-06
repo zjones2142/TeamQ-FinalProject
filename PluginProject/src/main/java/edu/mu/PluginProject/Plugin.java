@@ -46,12 +46,6 @@ public class Plugin extends JavaPlugin implements Listener
   //HELPER METHODS vvvvvvvvvvvvvvvvvvvvvvvvvvvv
   
   //returns array of player coordinates in {x,y,z} format
-  public int[] getPlayerLocationArray(Player p) 
-  {
-	  int[] coords = {p.getLocation().getBlockX(), p.getLocation().getBlockY(), p.getLocation().getBlockZ()};
-	  return coords;
-  }
-  
   public int[] getLocationXYZ(Location loc)
   {
 	  int[] coords = {loc.getBlockX(), loc.getBlockY(), loc.getBlockZ()};
@@ -61,15 +55,9 @@ public class Plugin extends JavaPlugin implements Listener
   //returns player location coordinates in String format
   public String getPlayerLocationText(Player p)
   {
-	  int[] coords = getPlayerLocationArray(p);
+	  int[] coords = getLocationXYZ(p.getLocation());
 	  String text = "X: "+coords[0]+" | Y: "+coords[1]+" | Z: "+coords[2];
 	  return text;
-  }
-  
-  public int getPlayerDistanceFromSurface(Player p)
-  {
-	  int result = 0;
-	  return result;
   }
   
   public void createPlayerDataCSV(Player p) throws IOException 
@@ -98,6 +86,7 @@ public class Plugin extends JavaPlugin implements Listener
 	  new RemoveLocation();
 	  new CoordinateUI();
 	  new GetDistanceToSurface();
+	  new GetDistanceToHome();
 	  dataFolder = getDataFolder();
 	  if(!dataFolder.exists())
 	  {
